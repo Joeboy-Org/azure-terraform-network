@@ -24,7 +24,7 @@ resource "azurerm_storage_container" "tfstate_dev" {
 
 resource "azurerm_storage_container" "tfplan_dev" {
   name                  = "tfplan${var.environment_name}"
-  storage_account_id    = azurerm_storage_account.main.id
+  storage_account_id    = azurerm_storage_account.dev.id
   container_access_type = "private"
 }
 
@@ -49,7 +49,7 @@ resource "azurerm_storage_account" "prod" {
 
 resource "azurerm_storage_container" "tfstate_prod" {
   name                  = "tfstate${var.environment_name}"
-  storage_account_id    = azurerm_storage_account.prod
+  storage_account_id    = azurerm_storage_account.prod.id
   container_access_type = "private"
 }
 
