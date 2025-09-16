@@ -1,1 +1,1 @@
-application_name   = "terraform-state"
+application_name = "terraform-state"
