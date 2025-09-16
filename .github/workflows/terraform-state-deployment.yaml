@@ -1,0 +1,30 @@
+name: 'Terraform State Deployment'
+on:
+  workflow_dispatch:
+    inputs:
+      GH_ENVIRONMENT:
+        type: choice
+        description: 'What github environment would you like to create a terraform state for?'
+        required: true
+        default: 'development'
+        options:
+          - development
+          - production
+      TF_ENVIRONMENT:
+        type: choice
+        description: 'What terraform environment would you like to create a terraform state for?'
+        required: true
+        default: 'dev'
+        options:
+          - dev
+          - prod
+
+jobs:
+  TfStateDeploy:
+    name: "${{ inputs.GH_ENVIRONMENT }} Terraform State Deployment"
+    uses: ./.github/workflows/tfstate.yaml
+    secrets: inherit
+    with:
+      GH_ENVIRONMENT: ${{ inputs.GH_ENVIRONMENT }}
+      TF_ENVIRONMENT: ${{ inputs.TF_ENVIRONMENT }}
+      WORKSPACE: ./terraform_azure_state_resources
