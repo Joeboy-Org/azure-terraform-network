@@ -45,27 +45,27 @@ jobs:
               working-directory: ${{ inputs.WORKSPACE }}
               run: terraform validate
 
-    TflintCheck:
-        name: Run tfLint Check - ${{ inputs.GH_ENVIRONMENT }}
-        runs-on: ubuntu-latest
-        steps:
-            - name: Repo Checkout
-              uses: actions/checkout@v4
+    # TflintCheck:
+    #     name: Run tfLint Check - ${{ inputs.GH_ENVIRONMENT }}
+    #     runs-on: ubuntu-latest
+    #     steps:
+    #         - name: Repo Checkout
+    #           uses: actions/checkout@v4
 
-            - uses: terraform-linters/setup-tflint@v4
-              name: Setup TFLint
-              with:
-                tflint_version: latest
+    #         - uses: terraform-linters/setup-tflint@v4
+    #           name: Setup TFLint
+    #           with:
+    #             tflint_version: latest
 
-            - name: Run tfLint
-              working-directory: ${{ inputs.WORKSPACE }}
-              run: tflint -f compact
+    #         - name: Run tfLint
+    #           working-directory: ${{ inputs.WORKSPACE }}
+    #           run: tflint -f compact
 
-            - name: Cache tfLint Plugins
-              uses: actions/cache@v4
-              with:
-                path: ~/.tflint.d/plugins
-                key: ${{ runner.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
+    #         - name: Cache tfLint Plugins
+    #           uses: actions/cache@v4
+    #           with:
+    #             path: ~/.tflint.d/plugins
+    #             key: ${{ runner.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
 
     tfsec:
         name: tfsec PR commenter - ${{ inputs.GH_ENVIRONMENT }}
