@@ -45,7 +45,7 @@ resource "azurerm_network_interface" "hub_nicB" {
 
 
 resource "azurerm_windows_virtual_machine" "vmA" {
-  name                = "vmA-${var.application_name}-${var.environment_name}"
+  name                = "vmA${var.application_name}${var.environment_name}"
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
   size                = "Standard_B2ms"
@@ -73,7 +73,7 @@ resource "azurerm_windows_virtual_machine" "vmA" {
 
 
 resource "azurerm_windows_virtual_machine" "vmB" {
-  name                = "vmB-${var.application_name}-${var.environment_name}"
+  name                = "vmB${var.application_name}${var.environment_name}"
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
   size                = "Standard_B2ms"
