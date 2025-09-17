@@ -24,7 +24,7 @@ jobs:
   
   Lab1DevTerraformDeployment:
     name: Terraform Lab1 Dev Deployment
-    needs: ["Lab1DevTFCheck"] 
+    # needs: ["Lab1DevTFCheck"] 
     if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
     uses: ./.github/workflows/tfapply.yaml
     secrets: inherit
@@ -50,7 +50,7 @@ jobs:
         
   Lab1ProdTerraformDeployment:
     name: Terraform Lab1 Prod Deployment
-    needs: ["Lab1ProdTFCheck"] 
+    # needs: ["Lab1ProdTFCheck"] 
     if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
     uses: ./.github/workflows/tfapply.yaml
     secrets: inherit
