@@ -1,0 +1,60 @@
+name: 'Lab1 Deployment'
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  ##############
+  # Lab1 Dev #
+  ##############
+  Lab1DevTFCheck:
+    name: Terraform Lab1 Dev Check
+    if: ${{ github.event_name == 'pull_request' }}
+    uses: ./.github/workflows/tfcheck.yaml
+    secrets: inherit
+    with:
+      GH_ENVIRONMENT: development
+      TF_ENVIRONMENT: dev
+      WORKSPACE: ./lab1
+      TF_PLAN: true
+  
+  Lab1DevTerraformDeployment:
+    name: Terraform Lab1 Dev Deployment
+    needs: ["Lab1DevTFCheck"] 
+    if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
+    uses: ./.github/workflows/tfapply.yaml
+    secrets: inherit
+    with:
+      GH_ENVIRONMENT: development
+      TF_ENVIRONMENT: dev
+      WORKSPACE: ./lab1
+
+
+    ##############
+    # Lab1 Prod #
+    ##############
+  Lab1ProdTFCheck:
+    name: Terraform Lab1 Prod Check
+    if: ${{ github.event_name == 'pull_request' }}
+    uses: ./.github/workflows/tfcheck.yaml
+    secrets: inherit
+    with:
+        GH_ENVIRONMENT: production
+        TF_ENVIRONMENT: prod
+        WORKSPACE: ./lab1
+        TF_PLAN: true
+        
+  Lab1ProdTerraformDeployment:
+    name: Terraform Lab1 Prod Deployment
+    needs: ["Lab1ProdTFCheck"] 
+    if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
+    uses: ./.github/workflows/tfapply.yaml
+    secrets: inherit
+    with:
+        GH_ENVIRONMENT: production
+        TF_ENVIRONMENT: prod
+        WORKSPACE: ./lab1
