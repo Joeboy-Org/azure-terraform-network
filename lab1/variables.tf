@@ -49,20 +49,20 @@ variable "spoke_vnets" {
   default = {}
 }
 
-variable "hub_base_address_space" {
-  description = "Base CIDR block for hub VNets"
-  type        = string
-  validation {
-    condition     = can(cidrhost(var.hub_base_address_space, 0))
-    error_message = "Hub base address space must be a valid CIDR block."
-  }
-}
+# variable "hub_base_address_space" {
+#   description = "Base CIDR block for hub VNets"
+#   type        = string
+#   validation {
+#     condition     = can(cidrhost(var.hub_base_address_space, 0))
+#     error_message = "Hub base address space must be a valid CIDR block."
+#   }
+# }
 
-variable "spoke_base_address_space" {
-  description = "Base CIDR block for spoke VNets"
-  type        = string
-  validation {
-    condition     = can(cidrhost(var.spoke_base_address_space, 0))
-    error_message = "Spoke base address space must be a valid CIDR block."
-  }
-}
+# variable "spoke_base_address_space" {
+#   description = "Base CIDR block for spoke VNets"
+#   type        = string
+#   validation {
+#     condition     = can(cidrhost(var.spoke_base_address_space, 0))
+#     error_message = "Spoke base address space must be a valid CIDR block."
+#   }
+# }
