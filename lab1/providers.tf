@@ -4,7 +4,8 @@ provider "azurerm" {
 }
 
 provider "azurerm" {
-  alias           = "remote"
-  subscription_id = var.remote_subscription_id
+  alias                           = "remote"
+  subscription_id                 = var.remote_subscription_id
+  resource_provider_registrations = "none"
   features {}
 }
