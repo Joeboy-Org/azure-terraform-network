@@ -8,7 +8,6 @@ data "azurerm_virtual_network" "remote" {
 ##########################
 # To be looked at later
 ##########################
-
 # data "azurerm_virtual_network" "remote_hubs" {
 #     for_each = var.hub_vnets
 #     name                = "${each.key}-${var.application_name}-${var.environment_name == "dev" ? 
