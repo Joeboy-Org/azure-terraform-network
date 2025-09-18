@@ -48,4 +48,4 @@ jobs:
         env:
           ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         working-directory: ${{ inputs.WORKSPACE }}
-        run: terraform plan -input=false -var-file=environment/${{ inputs.TF_ENVIRONMENT }}/${{ inputs.TF_ENVIRONMENT }}.tfvars
+        run: terraform plan -input=false -var-file=environment/${{ inputs.TF_ENVIRONMENT }}/${{ inputs.TF_ENVIRONMENT }}.tfvars -var="remote_subscription_id=${{ secrets.AZURE_REMOTE_SUBSCRIPTION_ID }}"

@@ -4,8 +4,8 @@
 
 
 resource "random_password" "vm_password" {
-  length = 16
-  special = true
+  length           = 16
+  special          = true
   override_special = "_%@"
 }
 
@@ -18,7 +18,7 @@ resource "azurerm_key_vault_secret" "secret" {
 
 
 resource "azurerm_network_interface" "hub_nicA" {
-  for_each = { for key, value in local.hub_subnets : key => value if value.name == "SubnetA"}
+  for_each            = { for key, value in local.hub_subnets : key => value if value.name == "SubnetA" }
   name                = "hub-nicA-${var.application_name}-${var.environment_name}"
   location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
@@ -31,7 +31,7 @@ resource "azurerm_network_interface" "hub_nicA" {
 }
 
 resource "azurerm_network_interface" "hub_nicB" {
-  for_each = { for key, value in local.hub_subnets : key => value if value.name == "SubnetB"}
+  for_each            = { for key, value in local.hub_subnets : key => value if value.name == "SubnetB" }
   name                = "hub-nicB-${var.application_name}-${var.environment_name}"
   location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
@@ -45,16 +45,16 @@ resource "azurerm_network_interface" "hub_nicB" {
 
 
 resource "azurerm_windows_virtual_machine" "vmA" {
-  name                = "vmA${var.application_name}${var.environment_name}"
-  resource_group_name = azurerm_resource_group.this.name
-  location            = azurerm_resource_group.this.location
-  size                = "Standard_B2ms"
-  admin_username      = "adminuser"
-  admin_password      = random_password.vm_password.result
-  network_interface_ids = [ for key, value in azurerm_network_interface.hub_nicA : value.id]
+  name                  = "vmA${var.application_name}${var.environment_name}"
+  resource_group_name   = azurerm_resource_group.this.name
+  location              = azurerm_resource_group.this.location
+  size                  = "Standard_B2ms"
+  admin_username        = "adminuser"
+  admin_password        = random_password.vm_password.result
+  network_interface_ids = [for key, value in azurerm_network_interface.hub_nicA : value.id]
 
   identity {
-    type = "UserAssigned"
+    type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.vm.id]
   }
 
@@ -73,16 +73,16 @@ resource "azurerm_windows_virtual_machine" "vmA" {
 
 
 resource "azurerm_windows_virtual_machine" "vmB" {
-  name                = "vmB${var.application_name}${var.environment_name}"
-  resource_group_name = azurerm_resource_group.this.name
-  location            = azurerm_resource_group.this.location
-  size                = "Standard_B2ms"
-  admin_username      = "adminuser"
-  admin_password      = random_password.vm_password.result
-  network_interface_ids = [ for key, value in azurerm_network_interface.hub_nicB : value.id]
+  name                  = "vmB${var.application_name}${var.environment_name}"
+  resource_group_name   = azurerm_resource_group.this.name
+  location              = azurerm_resource_group.this.location
+  size                  = "Standard_B2ms"
+  admin_username        = "adminuser"
+  admin_password        = random_password.vm_password.result
+  network_interface_ids = [for key, value in azurerm_network_interface.hub_nicB : value.id]
 
   identity {
-    type = "UserAssigned"
+    type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.vm.id]
   }
 
