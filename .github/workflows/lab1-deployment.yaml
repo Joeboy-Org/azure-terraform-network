@@ -9,7 +9,7 @@ on:
 
 jobs:
   ##############
-  # Lab1 Dev#
+  # Lab1 Dev #
   ##############
   Lab1DevTFCheck:
     name: Terraform Lab1 Dev Check
