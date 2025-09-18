@@ -22,4 +22,12 @@ locals {
       }
     }
   ]...)
+
+  #   refactored_vnet_config = merge({
+  #     for hub_key, hub_config in var.hub_vnets : "${hub_key}" => {
+  #         hub_key              = hub_key
+  #         primary_environment_name = "dev"
+  #         secondary_environment_name = "prod"
+  #       }
+  # }...)
 }
