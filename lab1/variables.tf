@@ -49,6 +49,11 @@ variable "spoke_vnets" {
   default = {}
 }
 
+variable "remote_subscription_id" {
+  description = "Remote subscription ID for peering"
+  type        = string
+}
+
 # variable "hub_base_address_space" {
 #   description = "Base CIDR block for hub VNets"
 #   type        = string

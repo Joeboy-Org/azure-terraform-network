@@ -1,6 +1,7 @@
 data "azurerm_client_config" "current" {}
 
 data "azurerm_virtual_network" "remote" {
+  provider            = azurerm.remote
   name                = var.environment_name == "dev" ? "hubvnetA-network-prod" : "hubvnetA-network-dev"
   resource_group_name = var.environment_name == "dev" ? "rg-network-prod" : "rg-network-dev"
 }
