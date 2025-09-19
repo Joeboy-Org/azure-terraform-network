@@ -24,7 +24,6 @@ resource "azurerm_private_dns_zone_virtual_network_link" "hub_vnet_dev_to_remote
   resource_group_name   = "rg-${var.application_name}-prod" # Prod RG (where prod DNS zone lives)
   private_dns_zone_name = data.azurerm_private_dns_zone.remote.name
   virtual_network_id    = azurerm_virtual_network.hub_vnets[each.key].id
-  registration_enabled  = true
 
 }
 
@@ -49,5 +48,4 @@ resource "azurerm_private_dns_zone_virtual_network_link" "hub_vnet_prod_to_remot
   resource_group_name   = "rg-${var.application_name}-dev" # Dev RG (where dev DNS zone lives)
   private_dns_zone_name = data.azurerm_private_dns_zone.remote.name
   virtual_network_id    = azurerm_virtual_network.hub_vnets[each.key].id
-  registration_enabled  = true
 }
