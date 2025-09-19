@@ -23,8 +23,8 @@ resource "azurerm_role_assignment" "vm_managed_identity" {
 
 
 # Grant remote managed identity permission to link VNets to local DNS zone
-resource "azurerm_role_assignment" "remote_to_local_dns" {
-  scope                = azurerm_private_dns_zone.private.id
-  role_definition_name = "Private DNS Zone Contributor"
-  principal_id         = data.azurerm_user_assigned_identity.remote.principal_id
-}
+# resource "azurerm_role_assignment" "remote_to_local_dns" {
+#   scope                = azurerm_private_dns_zone.private.id
+#   role_definition_name = "Private DNS Zone Contributor"
+#   principal_id         = data.azurerm_user_assigned_identity.remote.principal_id
+# }
