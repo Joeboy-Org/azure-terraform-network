@@ -23,6 +23,8 @@ locals {
     }
   ]...)
 
+  remote_environment = var.environment_name == "dev" ? "prod" : "dev"
+
   #   refactored_vnet_config = merge({
   #     for hub_key, hub_config in var.hub_vnets : "${hub_key}" => {
   #         hub_key              = hub_key
