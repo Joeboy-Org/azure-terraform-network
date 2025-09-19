@@ -15,15 +15,15 @@ data "azurerm_virtual_network" "remote" {
   resource_group_name = "rg-${var.application_name}-${local.remote_environment}"
 }
 
-data "azurerm_private_dns_zone" "remote" {
-  provider            = azurerm.remote
-  name                = "private${local.remote_environment}.tailoredng.click"
-  resource_group_name = "rg-${var.application_name}-${local.remote_environment}"
+# data "azurerm_private_dns_zone" "remote" {
+#   provider            = azurerm.remote
+#   name                = "private${local.remote_environment}.tailoredng.click"
+#   resource_group_name = "rg-${var.application_name}-${local.remote_environment}"
 
-  depends_on = [
-    azurerm_role_assignment.remote_to_local_dns #  remote DNS zone data object to depend on the role assignment
-  ]
-}
+#   depends_on = [
+#     azurerm_role_assignment.remote_to_local_dns #  remote DNS zone data object to depend on the role assignment
+#   ]
+# }
 
 
 ##########################
