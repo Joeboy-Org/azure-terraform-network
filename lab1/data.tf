@@ -5,7 +5,7 @@ data "azurerm_client_config" "current" {}
 data "azurerm_user_assigned_identity" "remote" {
   provider            = azurerm.remote
   name                = "github-managed-identity-${local.remote_environment}" # Adjust name pattern
-  resource_group_name = "rg-${var.application_name}-${local.remote_environment}"
+  resource_group_name = "rg-umi-${local.remote_environment}"
 
 }
 
