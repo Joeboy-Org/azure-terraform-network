@@ -25,4 +25,5 @@ locals {
   ]...)
 
   remote_environment = var.environment_name == "dev" ? "prod" : "dev"
+  remote_vnet        = var.environment_name == "dev" ? "HubVnetDns" : "SpokeVnetDns"
 }

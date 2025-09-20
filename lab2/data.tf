@@ -11,7 +11,7 @@ data "azurerm_user_assigned_identity" "remote" {
 
 data "azurerm_virtual_network" "remote" {
   provider            = azurerm.remote
-  name                = "hubvnetA-${var.application_name}-${local.remote_environment}"
+  name                = "${local.remote_vnet}-${var.application_name}-${local.remote_environment}"
   resource_group_name = "rg-${var.application_name}-${local.remote_environment}"
   depends_on = [
     azurerm_virtual_network.spoke_vnets,
