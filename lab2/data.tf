@@ -13,6 +13,13 @@ data "azurerm_virtual_network" "remote" {
   provider            = azurerm.remote
   name                = "hubvnetA-${var.application_name}-${local.remote_environment}"
   resource_group_name = "rg-${var.application_name}-${local.remote_environment}"
+  depends_on = [
+    azurerm_virtual_network.spoke_vnets,
+    azurerm_virtual_network.hub_vnets,
+    azurerm_role_assignment.spoke_to_hub_peer,
+    azurerm_role_assignment.hub_to_spoke_peer
+
+  ]
 }
 
 # data "azurerm_private_dns_zone" "remote" {
