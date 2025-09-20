@@ -3,9 +3,13 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - 'lab1/**'
   push:
     branches:
       - main
+    paths:
+      - 'lab1/**'
 
   workflow_dispatch:
     inputs:
