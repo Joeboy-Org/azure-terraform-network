@@ -33,7 +33,13 @@ variable "hub_vnets" {
     hub_base_address_space = string
     subnets = optional(map(object({
       address_prefix = string
-      delegation     = optional(map(any), {})
+      delegation = optional(map(object({
+        name = string
+        service_delegation = object({
+          actions = list(string)
+          name    = string
+        })
+      })), {})
     })), {})
   }))
   default = {}
