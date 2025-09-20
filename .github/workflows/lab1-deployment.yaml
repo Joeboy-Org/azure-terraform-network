@@ -7,6 +7,17 @@ on:
     branches:
       - main
 
+  workflow_dispatch:
+    inputs:
+      destroy_resources:
+        description: "Destroy Resources?"
+        required: true
+        default: "false"
+        type: choice
+        options:
+          - "true"
+          - "false"
+
 jobs:
   ##############
   # Lab1 Dev#
@@ -33,6 +44,17 @@ jobs:
       TF_ENVIRONMENT: dev
       WORKSPACE: ./lab1
 
+  Lab1DevTerraformDestroy:
+    name: Terraform Lab1 Dev Destroy
+    if: ${{ inputs.destroy_resources == 'true' }}
+    uses: ./.github/workflows/tfdestroy.yaml
+    secrets: inherit
+    with:
+      GH_ENVIRONMENT: development
+      TF_ENVIRONMENT: dev
+      WORKSPACE: ./lab1
+
+
 
     ##############
     # Lab1 Prod #
@@ -53,6 +75,16 @@ jobs:
     # needs: ["Lab1ProdTFCheck"] 
     if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
     uses: ./.github/workflows/tfapply.yaml
+    secrets: inherit
+    with:
+        GH_ENVIRONMENT: production
+        TF_ENVIRONMENT: prod
+        WORKSPACE: ./lab1
+
+  Lab1ProdTerraformDestroy:
+    name: Terraform Lab1 Prod Destroy
+    if: ${{ inputs.destroy_resources == 'true' }}
+    uses: ./.github/workflows/tfdestroy.yaml
     secrets: inherit
     with:
         GH_ENVIRONMENT: production
