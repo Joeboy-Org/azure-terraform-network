@@ -1,0 +1,92 @@
+name: 'Lab2 Deployment'
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+    inputs:
+      destroy_resources:
+        description: "Destroy Resources?"
+        required: true
+        default: "false"
+        type: choice
+        options:
+          - "true"
+          - "false"
+
+jobs:
+  ##############
+  # Lab2 Dev#
+  ##############
+  Lab2DevTFCheck:
+    name: Terraform Lab2 Dev Check
+    if: ${{ github.event_name == 'pull_request' }}
+    uses: ./.github/workflows/tfcheck.yaml
+    secrets: inherit
+    with:
+      GH_ENVIRONMENT: development
+      TF_ENVIRONMENT: dev
+      WORKSPACE: ./lab2
+      TF_PLAN: true
+  
+  Lab2DevTerraformDeployment:
+    name: Terraform Lab2 Dev Deployment
+    # needs: ["Lab2DevTFCheck"] 
+    if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
+    uses: ./.github/workflows/tfapply.yaml
+    secrets: inherit
+    with:
+      GH_ENVIRONMENT: development
+      TF_ENVIRONMENT: dev
+      WORKSPACE: ./lab2
+
+  Lab2DevTerraformDestroy:
+    name: Terraform Lab2 Dev Destroy
+    if: ${{ inputs.destroy_resources == 'true' }}
+    uses: ./.github/workflows/tfdestroy.yaml
+    secrets: inherit
+    with:
+      GH_ENVIRONMENT: development
+      TF_ENVIRONMENT: dev
+      WORKSPACE: ./lab2
+
+
+
+    ##############
+    # Lab2 Prod #
+    ##############
+  Lab2ProdTFCheck:
+    name: Terraform Lab2 Prod Check
+    if: ${{ github.event_name == 'pull_request' }}
+    uses: ./.github/workflows/tfcheck.yaml
+    secrets: inherit
+    with:
+        GH_ENVIRONMENT: production
+        TF_ENVIRONMENT: prod
+        WORKSPACE: ./lab2
+        TF_PLAN: true
+        
+  Lab2ProdTerraformDeployment:
+    name: Terraform Lab2 Prod Deployment
+    # needs: ["Lab2ProdTFCheck"] 
+    if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
+    uses: ./.github/workflows/tfapply.yaml
+    secrets: inherit
+    with:
+        GH_ENVIRONMENT: production
+        TF_ENVIRONMENT: prod
+        WORKSPACE: ./lab2
+
+  Lab2ProdTerraformDestroy:
+    name: Terraform Lab2 Prod Destroy
+    if: ${{ inputs.destroy_resources == 'true' }}
+    uses: ./.github/workflows/tfdestroy.yaml
+    secrets: inherit
+    with:
+        GH_ENVIRONMENT: production
+        TF_ENVIRONMENT: prod
+        WORKSPACE: ./lab2
