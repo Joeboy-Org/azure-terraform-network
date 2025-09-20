@@ -109,4 +109,4 @@ jobs:
         env:
           ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         working-directory: ${{ inputs.WORKSPACE }}
-        run: terraform destroy -input=false ${{ inputs.TF_ENVIRONMENT }}-terraform-plan-${{ github.run_id }}
+        run: terraform destroy -input=false ${{ inputs.TF_ENVIRONMENT }}-terraform-plan-destroy-${{ github.run_id }}
