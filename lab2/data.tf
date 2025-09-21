@@ -22,12 +22,27 @@ data "azurerm_virtual_network" "remote" {
   ]
 }
 
-# data "azurerm_private_dns_zone" "remote" {
-#   provider            = azurerm.remote
-#   name                = "private${local.remote_environment}.tailoredng.click"
-#   resource_group_name = "rg-${var.application_name}-${local.remote_environment}"
+data "azurerm_private_dns_zone" "remote" {
+  provider            = azurerm.remote
+  count               = var.environment_name == "dev" ? 1 : 0
+  name                = "private${local.remote_environment}.tailoredng.click"
+  resource_group_name = "rg-${var.application_name}-${local.remote_environment}"
 
-#   depends_on = [
-#     azurerm_role_assignment.remote_to_local_dns #  remote DNS zone data object to depend on the role assignment
-#   ]
-# }
+  depends_on = [
+    azurerm_role_assignment.remote_to_local_dns #  remote DNS zone data object to depend on the role assignment
+  ]
+}
+
+data "azurerm_private_dns_resolver" "remote" {
+  provider            = azurerm.remote
+  count               = var.environment_name == "dev" ? 1 : 0
+  name                = "dnsresolver-${var.application_name}-${local.remote_environment}"
+  resource_group_name = "rg-${var.application_name}-${local.remote_environment}"
+}
+
+data "azurerm_private_dns_resolver_inbound_endpoint" "remote" {
+  provider                = azurerm.remote
+  count                   = var.environment_name == "dev" ? 1 : 0
+  name                    = "inbound-endpoint"
+  private_dns_resolver_id = data.azurerm_private_dns_resolver.remote[0].id
+}
