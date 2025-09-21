@@ -166,47 +166,47 @@ resource "azurerm_network_interface" "spoke_nicB" {
   }
 }
 
-resource "azurerm_linux_virtual_machine" "spoke_vmA" {
-  count               = var.environment_name == "dev" ? 1 : 0
-  name                = "spokevmA${var.application_name}-${var.environment_name}"
-  resource_group_name = azurerm_resource_group.this.name
-  location            = azurerm_resource_group.this.location
-  size                = "Standard_B2s"
-  admin_username      = "adminuser"
-  network_interface_ids = [
-    for key, value in azurerm_network_interface.spoke_nicA : value.id
-  ]
-  identity {
-    type = "SystemAssigned"
-  }
-  admin_ssh_key {
-    username   = "adminuser"
-    public_key = tls_private_key.this[0].public_key_openssh
-  }
+# resource "azurerm_linux_virtual_machine" "spoke_vmA" {
+#   count               = var.environment_name == "dev" ? 1 : 0
+#   name                = "spokevmA${var.application_name}-${var.environment_name}"
+#   resource_group_name = azurerm_resource_group.this.name
+#   location            = azurerm_resource_group.this.location
+#   size                = "Standard_B2s"
+#   admin_username      = "adminuser"
+#   network_interface_ids = [
+#     for key, value in azurerm_network_interface.spoke_nicA : value.id
+#   ]
+#   identity {
+#     type = "SystemAssigned"
+#   }
+#   admin_ssh_key {
+#     username   = "adminuser"
+#     public_key = tls_private_key.this[0].public_key_openssh
+#   }
 
-  os_disk {
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
-  }
+#   os_disk {
+#     caching              = "ReadWrite"
+#     storage_account_type = "Standard_LRS"
+#   }
 
-  source_image_reference {
-    publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-jammy"
-    sku       = "22_04-lts"
-    version   = "latest"
-  }
+#   source_image_reference {
+#     publisher = "Canonical"
+#     offer     = "0001-com-ubuntu-server-jammy"
+#     sku       = "22_04-lts"
+#     version   = "latest"
+#   }
 
-  # Custom script to install BIND
-  custom_data = base64encode(templatefile("${path.module}/script/configure-dns-server.tpl", {
-    azure_dns_endpoint       = data.azurerm_private_dns_resolver_inbound_endpoint.remote[0].ip_configurations[0].private_ip_address
-    spoke_server_a           = azurerm_network_interface.spoke_nicA[keys(azurerm_network_interface.spoke_nicA)[0]].private_ip_address
-    spoke_server_b           = azurerm_network_interface.spoke_nicB[keys(azurerm_network_interface.spoke_nicB)[0]].private_ip_address
-    local_domain             = "tailoredng.local"
-    azure_domain             = data.azurerm_private_dns_zone.remote[0].name
-    hub_base_address_space   = "10.200.0.0/22"
-    spoke_base_address_space = "192.168.0.0/22"
-  }))
-}
+#   # Custom script to install BIND
+#   custom_data = base64encode(templatefile("${path.module}/script/configure-dns-server.tpl", {
+#     azure_dns_endpoint       = data.azurerm_private_dns_resolver_inbound_endpoint.remote[0].ip_configurations[0].private_ip_address
+#     spoke_server_a           = azurerm_network_interface.spoke_nicA[keys(azurerm_network_interface.spoke_nicA)[0]].private_ip_address
+#     spoke_server_b           = azurerm_network_interface.spoke_nicB[keys(azurerm_network_interface.spoke_nicB)[0]].private_ip_address
+#     local_domain             = "tailoredng.local"
+#     azure_domain             = data.azurerm_private_dns_zone.remote[0].name
+#     hub_base_address_space   = "10.200.0.0/22"
+#     spoke_base_address_space = "192.168.0.0/22"
+#   }))
+# }
 resource "azurerm_linux_virtual_machine" "spoke_vmB" {
   count               = var.environment_name == "dev" ? 1 : 0
   name                = "spokevmB${var.application_name}-${var.environment_name}"
