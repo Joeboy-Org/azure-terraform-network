@@ -33,6 +33,13 @@ data "azurerm_private_dns_zone" "remote" {
   ]
 }
 
+data "azurerm_private_dns_resolver" "remote" {
+  provider            = azurerm.remote
+  count               = var.environment_name == "dev" ? 1 : 0
+  name                = "dnsresolver-${var.application_name}-${local.remote_environment}"
+  resource_group_name = "rg-${var.application_name}-${local.remote_environment}"
+}
+
 data "azurerm_private_dns_resolver_inbound_endpoint" "remote" {
   provider                = azurerm.remote
   count                   = var.environment_name == "dev" ? 1 : 0

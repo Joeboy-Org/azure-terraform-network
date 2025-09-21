@@ -28,13 +28,13 @@ locals {
   remote_vnet        = var.environment_name == "dev" ? "HubVnetDns" : "SpokeVnetDns"
   key_vault_roles    = ["Key Vault Administrator", "Key Vault Secrets User"]
 
-  dns_config_script = var.environment_name == "dev" ? templatefile("${path.module}/script/configure-dns-server.tpl", {
-    azure_dns_endpoint       = data.azurerm_private_dns_resolver_inbound_endpoint.remote.ip_configurations[0].private_ip_address
-    spoke_server_a           = azurerm_linux_virtual_machine.spoke_vmA[0].private_ip_address
-    spoke_server_b           = azurerm_linux_virtual_machine.spoke_vmB[0].private_ip_address
-    local_domain             = "tailoredng.local"
-    azure_domain             = data.azurerm_private_dns_zone.remote[0].name
-    hub_base_address_space   = "10.200.0.0/22"
-    spoke_base_address_space = "192.168.0.0/22"
-  }) : ""
+  # dns_config_script = var.environment_name == "dev" ? templatefile("${path.module}/script/configure-dns-server.tpl", {
+  #   azure_dns_endpoint       = data.azurerm_private_dns_resolver_inbound_endpoint.remote.ip_configurations[0].private_ip_address
+  #   spoke_server_a           = azurerm_linux_virtual_machine.spoke_vmA[0].private_ip_address
+  #   spoke_server_b           = azurerm_linux_virtual_machine.spoke_vmB[0].private_ip_address
+  #   local_domain             = "tailoredng.local"
+  #   azure_domain             = data.azurerm_private_dns_zone.remote[0].name
+  #   hub_base_address_space   = "10.200.0.0/22"
+  #   spoke_base_address_space = "192.168.0.0/22"
+  # }) : ""
 }
