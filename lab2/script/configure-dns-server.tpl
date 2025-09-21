@@ -171,6 +171,22 @@ chmod 755 /etc/bind/zones
 chmod 644 /etc/bind/zones/*
 chmod 755 /var/log/bind
 
+
+# Configure system to use local DNS
+echo "Configuring system DNS..."
+cat > /etc/systemd/resolved.conf << EOF
+[Resolve]
+DNS=127.0.0.1
+Domains=$${LOCAL_DOMAIN}
+FallbackDNS=168.63.129.16 8.8.8.8
+DNSSEC=yes
+Cache=yes
+EOF
+
+# Restart systemd-resolved
+systemctl restart systemd-resolved
+check_status "systemd-resolved restart"
+
 # Test configuration files
 echo "Testing BIND configuration..."
 named-checkconf
@@ -183,27 +199,13 @@ named-checkzone 0.168.192.in-addr.arpa /etc/bind/zones/192.168.0.rev
 check_status "Reverse zone check"
 
 # Enable and start BIND9
-systemctl enable bind9
 systemctl restart bind9
+systemctl start bind9
+systemctl enable bind9
 check_status "BIND9 service restart"
 
 # Wait for service to be ready
 sleep 5
-
-# Configure system to use local DNS
-echo "Configuring system DNS..."
-sudo bash -c 'cat > /etc/systemd/resolved.conf << EOF
-[Resolve]
-DNS=127.0.0.1
-Domains=$${LOCAL_DOMAIN}
-FallbackDNS=168.63.129.16 8.8.8.8
-DNSSEC=yes
-Cache=yes
-EOF'
-
-# Restart systemd-resolved
-systemctl restart systemd-resolved
-check_status "systemd-resolved restart"
 
 # Install additional useful tools
 echo "Installing additional tools..."
