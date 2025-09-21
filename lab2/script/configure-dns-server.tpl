@@ -174,14 +174,14 @@ chmod 755 /var/log/bind
 
 # Configure system to use local DNS
 echo "Configuring system DNS..."
-sudo bash -c 'cat > /etc/systemd/resolved.conf << EOF
+cat > /etc/systemd/resolved.conf << EOF
 [Resolve]
 DNS=127.0.0.1
 Domains=$${LOCAL_DOMAIN}
 FallbackDNS=168.63.129.16 8.8.8.8
 DNSSEC=yes
 Cache=yes
-EOF'
+EOF
 
 # Restart systemd-resolved
 systemctl restart systemd-resolved
