@@ -111,25 +111,25 @@ resource "azurerm_key_vault_secret" "hub_vm_secret" {
 # # Spoke VM CONFIG
 # ###############################
 
-# resource "tls_private_key" "this" {
-#   count     = var.environment_name == "dev" ? 1 : 0
-#   algorithm = "RSA"
-#   rsa_bits  = 4096
-# }
+resource "tls_private_key" "this" {
+  count     = var.environment_name == "dev" ? 1 : 0
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
 
-# #Store the ssh key in key vault secrets
-# resource "azurerm_key_vault_secret" "spoke_vm_private" {
-#   count        = var.environment_name == "dev" ? 1 : 0
-#   name         = "spoke-vm-ssh-private"
-#   value        = tls_private_key.this[0].private_key_pem
-#   key_vault_id = azurerm_key_vault.main.id
-# }
-# resource "azurerm_key_vault_secret" "spoke_vm_public" {
-#   count        = var.environment_name == "dev" ? 1 : 0
-#   name         = "spoke-vm-ssh-public"
-#   value        = tls_private_key.this[0].public_key_openssh
-#   key_vault_id = azurerm_key_vault.main.id
-# }
+#Store the ssh key in key vault secrets
+resource "azurerm_key_vault_secret" "spoke_vm_private" {
+  count        = var.environment_name == "dev" ? 1 : 0
+  name         = "spoke-vm-ssh-private"
+  value        = tls_private_key.this[0].private_key_pem
+  key_vault_id = azurerm_key_vault.main.id
+}
+resource "azurerm_key_vault_secret" "spoke_vm_public" {
+  count        = var.environment_name == "dev" ? 1 : 0
+  name         = "spoke-vm-ssh-public"
+  value        = tls_private_key.this[0].public_key_openssh
+  key_vault_id = azurerm_key_vault.main.id
+}
 
 # resource "azurerm_public_ip" "spoke_vmA" {
 #   count               = var.environment_name == "dev" ? 1 : 0
