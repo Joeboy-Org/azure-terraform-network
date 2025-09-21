@@ -49,6 +49,7 @@ resource "azurerm_network_interface" "hub_nicB" {
 resource "azurerm_windows_virtual_machine" "hubvmA" {
   count                 = var.environment_name == "prod" ? 1 : 0
   name                  = "hubvmA${var.application_name}${var.environment_name}"
+  computer_name         = "hubvmA-${substr(var.environment_name, 0, 4)}"
   resource_group_name   = azurerm_resource_group.this.name
   location              = azurerm_resource_group.this.location
   size                  = "Standard_B2ms"
@@ -79,6 +80,7 @@ resource "azurerm_windows_virtual_machine" "hubvmB" {
   count = var.environment_name == "prod" ? 1 : 0
 
   name                  = "hubvmB${var.application_name}${var.environment_name}"
+  computer_name         = "hubvmB-${substr(var.environment_name, 0, 4)}"
   resource_group_name   = azurerm_resource_group.this.name
   location              = azurerm_resource_group.this.location
   size                  = "Standard_B2ms"
