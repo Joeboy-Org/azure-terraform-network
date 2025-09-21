@@ -85,17 +85,6 @@ options {
 };
 
 // Enable logging
-logging {
-    channel bind_log {
-        file "/var/log/bind/bind.log";
-        severity info;
-        print-time yes;
-        print-category yes;
-        print-severity yes;
-    };
-    category default { bind_log; };
-    category queries { bind_log; };
-};
 EOF
 
 cat > /etc/bind/named.conf.local << EOF
@@ -134,7 +123,7 @@ SPOKE_SERVER_B_LAST_OCTET=$${SPOKE_SERVER_B##*.}
 
 # Create forward zone file
 cat > /etc/bind/zones/$${LOCAL_DOMAIN} << EOF
-$TTL    86400
+\$TTL    86400
 @       IN      SOA     server-a.$${LOCAL_DOMAIN}. admin.$${LOCAL_DOMAIN}. (
                               2024031501 ; Serial (YYYYMMDDNN)
                          3600           ; Refresh (1 hour)
@@ -158,7 +147,7 @@ EOF
 
 # Create reverse zone file
 cat > /etc/bind/zones/192.168.0.rev << EOF
-$TTL    86400
+\$TTL    86400
 @       IN      SOA     server-a.$${LOCAL_DOMAIN}. admin.$${LOCAL_DOMAIN}. (
                               2024031501 ; Serial
                          3600           ; Refresh
@@ -203,14 +192,14 @@ sleep 5
 
 # Configure system to use local DNS
 echo "Configuring system DNS..."
-cat > /etc/systemd/resolved.conf << EOF
+sudo bash -c 'cat > /etc/systemd/resolved.conf << EOF
 [Resolve]
 DNS=127.0.0.1
 Domains=$${LOCAL_DOMAIN}
 FallbackDNS=168.63.129.16 8.8.8.8
 DNSSEC=yes
 Cache=yes
-EOF
+EOF'
 
 # Restart systemd-resolved
 systemctl restart systemd-resolved
