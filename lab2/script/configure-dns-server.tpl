@@ -49,7 +49,7 @@ cp /etc/bind/named.conf.options /etc/bind/named.conf.options.backup
 cp /etc/bind/named.conf.local /etc/bind/named.conf.local.backup
 
 # Configure BIND options
-cat > /etc/bind/named.conf.options << 'EOF'
+cat > /etc/bind/named.conf.options << "EOF"
 options {
     directory "/var/cache/bind";
     
@@ -98,7 +98,7 @@ logging {
 };
 EOF
 
-cat > /etc/bind/named.conf.local << 'EOF'
+cat > /etc/bind/named.conf.local << "EOF"
 // Forward zone for Azure private DNS
 zone "$${AZURE_DOMAIN}" {
     type forward;
@@ -133,7 +133,7 @@ echo "Server A last octet: $SPOKE_SERVER_A_LAST_OCTET"
 echo "Server B last octet: $SPOKE_SERVER_B_LAST_OCTET"
 
 # Create forward zone file
-cat > /etc/bind/zones/$${LOCAL_DOMAIN} << 'EOF'
+cat > /etc/bind/zones/$${LOCAL_DOMAIN} << "EOF"
 $TTL    86400
 @       IN      SOA     server-a.$${LOCAL_DOMAIN}. admin.$${LOCAL_DOMAIN}. (
                               2024031501 ; Serial (YYYYMMDDNN)
@@ -157,7 +157,7 @@ www             IN      CNAME   server-b
 EOF
 
 # Create reverse zone file
-cat > /etc/bind/zones/192.168.0.rev << 'EOF'
+cat > /etc/bind/zones/192.168.0.rev << "EOF"
 $TTL    86400
 @       IN      SOA     server-a.$${LOCAL_DOMAIN}. admin.$${LOCAL_DOMAIN}. (
                               2024031501 ; Serial
@@ -203,7 +203,7 @@ sleep 5
 
 # Configure system to use local DNS
 echo "Configuring system DNS..."
-cat > /etc/systemd/resolved.conf << 'EOF'
+cat > /etc/systemd/resolved.conf << "EOF"
 [Resolve]
 DNS=127.0.0.1
 Domains=$${LOCAL_DOMAIN}
@@ -222,7 +222,7 @@ apt-get install -y htop curl wget net-tools tcpdump wireshark-common
 check_status "Additional tools installation"
 
 # Create DNS testing script
-cat > /home/adminuser/test-dns.sh << 'EOF'
+cat > /home/adminuser/test-dns.sh << "EOF"
 #!/bin/bash
 echo "=== DNS Server Testing Script ==="
 echo "Server: $(hostname)"
