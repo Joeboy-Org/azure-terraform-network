@@ -60,8 +60,8 @@ options {
     // Allow queries from local networks
     allow-query { 
         localhost; 
-        "$${SPOKE_BASE_ADDR}"; 
-        "$${HUB_BASE_ADDR}"; 
+        $${SPOKE_BASE_ADDR}; 
+        $${HUB_BASE_ADDR}; 
     };
     
     // Forwarders for internet queries
@@ -110,8 +110,8 @@ zone "$${AZURE_DOMAIN}" {
 zone "$${LOCAL_DOMAIN}" {
     type master;
     file "/etc/bind/zones/$${LOCAL_DOMAIN}";
-    allow-transfer { "$${SPOKE_SERVER_B}"; }; // Allow Server B to do zone transfers
-    also-notify { "$${SPOKE_SERVER_B}"; };    // Notify Server B of changes
+    allow-transfer { $${SPOKE_SERVER_B}; }; // Allow Server B to do zone transfers
+    also-notify { $${SPOKE_SERVER_B}; };    // Notify Server B of changes
 };
 
 // Reverse zone for local network
@@ -126,16 +126,16 @@ mkdir -p /etc/bind/zones
 mkdir -p /var/log/bind
 
 # Calculate last octets for reverse DNS
-SPOKE_SERVER_A_LAST_OCTET="$${SPOKE_SERVER_A##*.}"
-SPOKE_SERVER_B_LAST_OCTET="$${SPOKE_SERVER_B##*.}"
+SPOKE_SERVER_A_LAST_OCTET=$${SPOKE_SERVER_A##*.}
+SPOKE_SERVER_B_LAST_OCTET=$${SPOKE_SERVER_B##*.}
 
-echo "Server A last octet: $SPOKE_SERVER_A_LAST_OCTET"
-echo "Server B last octet: $SPOKE_SERVER_B_LAST_OCTET"
+# echo "Server A last octet: $SPOKE_SERVER_A_LAST_OCTET"
+# echo "Server B last octet: $SPOKE_SERVER_B_LAST_OCTET"
 
 # Create forward zone file
-cat > /etc/bind/zones/"$${LOCAL_DOMAIN}" << EOF
+cat > /etc/bind/zones/$${LOCAL_DOMAIN} << EOF
 $TTL    86400
-@       IN      SOA     server-a.$${LOCAL_DOMAIN}. admin."$${LOCAL_DOMAIN}". (
+@       IN      SOA     server-a.$${LOCAL_DOMAIN}. admin.$${LOCAL_DOMAIN}. (
                               2024031501 ; Serial (YYYYMMDDNN)
                          3600           ; Refresh (1 hour)
                          1800           ; Retry (30 minutes)
@@ -143,12 +143,12 @@ $TTL    86400
                          86400 )        ; Minimum TTL (1 day)
 
 ; Name servers
-@       IN      NS      server-a."$${LOCAL_DOMAIN}".
+@       IN      NS      server-a.$${LOCAL_DOMAIN}.
 
 ; A records
-server-a        IN      A       "$${SPOKE_SERVER_A}"
-server-b        IN      A       "$${SPOKE_SERVER_B}"
-dns             IN      A       "$${SPOKE_SERVER_A}"
+server-a        IN      A       $${SPOKE_SERVER_A}
+server-b        IN      A       $${SPOKE_SERVER_B}
+dns             IN      A       $${SPOKE_SERVER_A}
 
 
 ; CNAME records
@@ -159,7 +159,7 @@ EOF
 # Create reverse zone file
 cat > /etc/bind/zones/192.168.0.rev << EOF
 $TTL    86400
-@       IN      SOA     server-a."$${LOCAL_DOMAIN}". admin."$${LOCAL_DOMAIN}". (
+@       IN      SOA     server-a.$${LOCAL_DOMAIN}. admin.$${LOCAL_DOMAIN}. (
                               2024031501 ; Serial
                          3600           ; Refresh
                          1800           ; Retry
@@ -167,11 +167,11 @@ $TTL    86400
                          86400 )        ; Minimum TTL
 
 ; Name servers
-@       IN      NS      server-a."$${LOCAL_DOMAIN}".
+@       IN      NS      server-a.$${LOCAL_DOMAIN}.
 
 ; PTR records
-"$${SPOKE_SERVER_A_LAST_OCTET}"     IN      PTR     server-a."$${LOCAL_DOMAIN}".
-"$${SPOKE_SERVER_B_LAST_OCTET}"      IN      PTR     server-b."$${LOCAL_DOMAIN}".
+$${SPOKE_SERVER_A_LAST_OCTET}     IN      PTR     server-a.$${LOCAL_DOMAIN}.
+$${SPOKE_SERVER_B_LAST_OCTET}      IN      PTR     server-b.$${LOCAL_DOMAIN}.
 
 EOF
 
@@ -206,7 +206,7 @@ echo "Configuring system DNS..."
 cat > /etc/systemd/resolved.conf << EOF
 [Resolve]
 DNS=127.0.0.1
-Domains="$${LOCAL_DOMAIN}"
+Domains=$${LOCAL_DOMAIN}
 FallbackDNS=168.63.129.16 8.8.8.8
 DNSSEC=yes
 Cache=yes
@@ -230,15 +230,15 @@ echo "Time: $(date)"
 echo ""
 
 echo "1. Testing server a local zone resolution:"
-nslookup server-a."$${LOCAL_DOMAIN}" 127.0.0.1
+nslookup server-a.$${LOCAL_DOMAIN} 127.0.0.1
 echo ""
 
 echo "2. Testing server b local zone resolution:"
-nslookup server-b."$${LOCAL_DOMAIN}" 127.0.0.1
+nslookup server-b.$${LOCAL_DOMAIN} 127.0.0.1
 echo ""
 
 echo "2. Testing Azure private zone forwarding:"
-nslookup app."$${AZURE_DOMAIN}" 127.0.0.1
+nslookup app.$${AZURE_DOMAIN} 127.0.0.1
 echo ""
 
 echo "3. Testing internet resolution:"
