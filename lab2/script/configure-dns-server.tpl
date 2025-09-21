@@ -171,24 +171,6 @@ chmod 755 /etc/bind/zones
 chmod 644 /etc/bind/zones/*
 chmod 755 /var/log/bind
 
-# Test configuration files
-echo "Testing BIND configuration..."
-named-checkconf
-check_status "BIND configuration check"
-
-named-checkzone $${LOCAL_DOMAIN} /etc/bind/zones/$${LOCAL_DOMAIN}
-check_status "Forward zone check"
-
-named-checkzone 0.168.192.in-addr.arpa /etc/bind/zones/192.168.0.rev
-check_status "Reverse zone check"
-
-# Enable and start BIND9
-systemctl enable bind9
-systemctl restart bind9
-check_status "BIND9 service restart"
-
-# Wait for service to be ready
-sleep 5
 
 # Configure system to use local DNS
 echo "Configuring system DNS..."
@@ -204,6 +186,26 @@ EOF'
 # Restart systemd-resolved
 systemctl restart systemd-resolved
 check_status "systemd-resolved restart"
+
+# Test configuration files
+echo "Testing BIND configuration..."
+named-checkconf
+check_status "BIND configuration check"
+
+named-checkzone $${LOCAL_DOMAIN} /etc/bind/zones/$${LOCAL_DOMAIN}
+check_status "Forward zone check"
+
+named-checkzone 0.168.192.in-addr.arpa /etc/bind/zones/192.168.0.rev
+check_status "Reverse zone check"
+
+# Enable and start BIND9
+systemctl restart bind9
+systemctl start bind9
+systemctl enable bind9
+check_status "BIND9 service restart"
+
+# Wait for service to be ready
+sleep 5
 
 # Install additional useful tools
 echo "Installing additional tools..."
