@@ -25,8 +25,9 @@ resource "azurerm_role_assignment" "vm_managed_identity" {
 
 # Grant remote managed identity permission to peer VNets
 resource "azurerm_role_assignment" "spoke_to_hub_peer" {
-  count                = var.environment_name == "dev" ? 1 : 0 # Add this
-  scope                = azurerm_virtual_network.spoke_vnets["SpokeVnetDns"].id
+  # count                = var.environment_name == "dev" ? 1 : 0 # Add this
+  for_each             = { for key, value in var.spoke_vnets : key => value if var.environment_name == "dev" }
+  scope                = azurerm_virtual_network.spoke_vnets[each.key].id
   role_definition_name = "Network Contributor"
   principal_id         = data.azurerm_user_assigned_identity.remote.principal_id
 }
