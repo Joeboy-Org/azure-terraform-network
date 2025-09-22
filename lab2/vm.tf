@@ -167,14 +167,15 @@ resource "azurerm_network_interface" "spoke_nicB" {
 }
 
 resource "azurerm_linux_virtual_machine" "spoke_vmA" {
-  count               = var.environment_name == "dev" ? 1 : 0
-  name                = "spokevmA${var.application_name}-${var.environment_name}"
+  count               = var.environment_name == "dev" ? length(keys(azurerm_network_interface.spoke_nicA)) : 0
+  name                = "spokevmA${count.index}${var.application_name}-${var.environment_name}"
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
   size                = "Standard_B2s"
   admin_username      = "adminuser"
   network_interface_ids = [
-    for key, value in azurerm_network_interface.spoke_nicA : value.id
+    # for key, value in azurerm_network_interface.spoke_nicA : value.id
+    azurerm_network_interface.spoke_nicA[keys(azurerm_network_interface.spoke_nicA)[count.index]].id
   ]
   identity {
     type = "SystemAssigned"
@@ -199,8 +200,8 @@ resource "azurerm_linux_virtual_machine" "spoke_vmA" {
   # Custom script to install BIND
   custom_data = base64encode(templatefile("${path.module}/script/configure-dns-server.tpl", {
     azure_dns_endpoint       = data.azurerm_private_dns_resolver_inbound_endpoint.remote[0].ip_configurations[0].private_ip_address
-    spoke_server_a           = azurerm_network_interface.spoke_nicA[keys(azurerm_network_interface.spoke_nicA)[0]].private_ip_address
-    spoke_server_b           = azurerm_network_interface.spoke_nicB[keys(azurerm_network_interface.spoke_nicB)[0]].private_ip_address
+    spoke_server_a           = azurerm_network_interface.spoke_nicA[keys(azurerm_network_interface.spoke_nicA)[count.index]].private_ip_address
+    spoke_server_b           = azurerm_network_interface.spoke_nicB[keys(azurerm_network_interface.spoke_nicB)[count.index]].private_ip_address
     local_domain             = "tailoredng.local"
     azure_domain             = data.azurerm_private_dns_zone.remote[0].name
     hub_base_address_space   = "10.200.0.0/22"
@@ -209,14 +210,15 @@ resource "azurerm_linux_virtual_machine" "spoke_vmA" {
 }
 
 resource "azurerm_linux_virtual_machine" "spoke_vmB" {
-  count               = var.environment_name == "dev" ? 1 : 0
-  name                = "spokevmB${var.application_name}-${var.environment_name}"
+  count               = var.environment_name == "dev" ? length(keys(azurerm_network_interface.spoke_nicB)) : 0
+  name                = "spokevmB${count.index}${var.application_name}-${var.environment_name}"
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
   size                = "Standard_B2s"
   admin_username      = "adminuser"
   network_interface_ids = [
-    for key, value in azurerm_network_interface.spoke_nicB : value.id
+    # for key, value in azurerm_network_interface.spoke_nicB : value.id
+    azurerm_network_interface.spoke_nicB[keys(azurerm_network_interface.spoke_nicB)[count.index]].id
   ]
   identity {
     type = "SystemAssigned"
