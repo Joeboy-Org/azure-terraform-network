@@ -10,8 +10,9 @@ data "azurerm_user_assigned_identity" "remote" {
 }
 
 data "azurerm_virtual_network" "remote" {
+  for_each            = var.environment_name == "dev" ? var.hub_vnets : var.spoke_vnets
   provider            = azurerm.remote
-  name                = "${local.remote_vnet}-${var.application_name}-${local.remote_environment}"
+  name                = "${each.key}-${var.application_name}-${local.remote_environment}"
   resource_group_name = "rg-${var.application_name}-${local.remote_environment}"
   depends_on = [
     azurerm_virtual_network.spoke_vnets,
