@@ -201,7 +201,7 @@ resource "azurerm_linux_virtual_machine" "spoke_vmA" {
   custom_data = base64encode(templatefile("${path.module}/script/configure-dns-server.tpl", {
     azure_dns_endpoint       = data.azurerm_private_dns_resolver_inbound_endpoint.remote[0].ip_configurations[0].private_ip_address
     spoke_server_a           = azurerm_network_interface.spoke_nicA[each.key].private_ip_address
-    spoke_server_b           = azurerm_network_interface.spoke_nicB[each.key].private_ip_address
+    spoke_server_b           = azurerm_network_interface.spoke_nicB[replace(each.key, "SubnetA", "SubnetB")].private_ip_address
     local_domain             = "tailoredng.local"
     azure_domain             = data.azurerm_private_dns_zone.remote[0].name
     hub_base_address_space   = "10.200.0.0/22"

@@ -21,7 +21,7 @@ spoke_vnets = {
       }
     }
   }
-  "SpokeVnetDnsA" = {
+  "SpokeVnetDnsB" = {
     spoke_base_address_space = "192.169.8.0/22"
     subnets = {
       "SubnetA" = {
