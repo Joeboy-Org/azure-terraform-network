@@ -7,7 +7,7 @@ secondary_location = "australiasoutheast"
 #####################
 
 spoke_vnets = {
-  "SpokeVnetDns" = {
+  "SpokeVnetDnsA" = {
     spoke_base_address_space = "192.168.0.0/22"
     subnets = {
       "AzureBastionSubnet" = {
@@ -21,14 +21,14 @@ spoke_vnets = {
       }
     }
   }
-  "SpokeVnetB" = {
-    spoke_base_address_space = "192.169.10.0/22"
+  "SpokeVnetDnsA" = {
+    spoke_base_address_space = "192.169.8.0/22"
     subnets = {
       "SubnetA" = {
-        address_prefix = "192.169.10.0/26"
+        address_prefix = "192.169.8.0/26"
       }
       "SubnetB" = {
-        address_prefix = "192.169.10.64/26"
+        address_prefix = "192.169.8.64/26"
       }
     }
   }
