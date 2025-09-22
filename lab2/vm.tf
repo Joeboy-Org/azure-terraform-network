@@ -19,92 +19,92 @@ resource "azurerm_key_vault_secret" "hub_vm_secret" {
 }
 
 
-# resource "azurerm_network_interface" "hub_nicA" {
-#   for_each            = { for key, value in local.hub_subnets : key => value if value.name == "SubnetA" && var.environment_name == "prod" }
-#   name                = "hub-nicA-${var.application_name}-${var.environment_name}"
-#   location            = azurerm_resource_group.this.location
-#   resource_group_name = azurerm_resource_group.this.name
+resource "azurerm_network_interface" "hub_nicA" {
+  for_each            = { for key, value in local.hub_subnets : key => value if value.name == "SubnetA" && var.environment_name == "prod" }
+  name                = "hub-nicA-${var.application_name}-${var.environment_name}"
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
 
-#   ip_configuration {
-#     name                          = "internal"
-#     subnet_id                     = azurerm_subnet.hub_subnets[each.key].id
-#     private_ip_address_allocation = "Dynamic"
-#   }
-# }
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.hub_subnets[each.key].id
+    private_ip_address_allocation = "Dynamic"
+  }
+}
 
-# resource "azurerm_network_interface" "hub_nicB" {
-#   for_each            = { for key, value in local.hub_subnets : key => value if value.name == "SubnetB" && var.environment_name == "prod" }
-#   name                = "hub-nicB-${var.application_name}-${var.environment_name}"
-#   location            = azurerm_resource_group.this.location
-#   resource_group_name = azurerm_resource_group.this.name
+resource "azurerm_network_interface" "hub_nicB" {
+  for_each            = { for key, value in local.hub_subnets : key => value if value.name == "SubnetB" && var.environment_name == "prod" }
+  name                = "hub-nicB-${var.application_name}-${var.environment_name}"
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
 
-#   ip_configuration {
-#     name                          = "internal"
-#     subnet_id                     = azurerm_subnet.hub_subnets[each.key].id
-#     private_ip_address_allocation = "Dynamic"
-#   }
-# }
-
-
-# resource "azurerm_windows_virtual_machine" "hubvmA" {
-#   count                 = var.environment_name == "prod" ? 1 : 0
-#   name                  = "hubvmA${var.application_name}${var.environment_name}"
-#   computer_name         = "hubvmA-${substr(var.environment_name, 0, 4)}"
-#   resource_group_name   = azurerm_resource_group.this.name
-#   location              = azurerm_resource_group.this.location
-#   size                  = "Standard_B2ms"
-#   admin_username        = "adminuser"
-#   admin_password        = random_password.hub_vm_password[0].result
-#   network_interface_ids = [for key, value in azurerm_network_interface.hub_nicA : value.id]
-
-#   identity {
-#     type         = "UserAssigned"
-#     identity_ids = [azurerm_user_assigned_identity.vm.id]
-#   }
-
-#   os_disk {
-#     caching              = "ReadWrite"
-#     storage_account_type = "Standard_LRS"
-#   }
-
-#   source_image_reference {
-#     publisher = "MicrosoftWindowsServer"
-#     offer     = "WindowsServer"
-#     sku       = "2022-Datacenter"
-#     version   = "latest"
-#   }
-# }
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.hub_subnets[each.key].id
+    private_ip_address_allocation = "Dynamic"
+  }
+}
 
 
-# resource "azurerm_windows_virtual_machine" "hubvmB" {
-#   count = var.environment_name == "prod" ? 1 : 0
+resource "azurerm_windows_virtual_machine" "hubvmA" {
+  count                 = var.environment_name == "prod" ? 1 : 0
+  name                  = "hubvmA${var.application_name}${var.environment_name}"
+  computer_name         = "hubvmA-${substr(var.environment_name, 0, 4)}"
+  resource_group_name   = azurerm_resource_group.this.name
+  location              = azurerm_resource_group.this.location
+  size                  = "Standard_B2ms"
+  admin_username        = "adminuser"
+  admin_password        = random_password.hub_vm_password[0].result
+  network_interface_ids = [for key, value in azurerm_network_interface.hub_nicA : value.id]
 
-#   name                  = "hubvmB${var.application_name}${var.environment_name}"
-#   computer_name         = "hubvmB-${substr(var.environment_name, 0, 4)}"
-#   resource_group_name   = azurerm_resource_group.this.name
-#   location              = azurerm_resource_group.this.location
-#   size                  = "Standard_B2ms"
-#   admin_username        = "adminuser"
-#   admin_password        = random_password.hub_vm_password[0].result
-#   network_interface_ids = [for key, value in azurerm_network_interface.hub_nicB : value.id]
+  identity {
+    type         = "UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.vm.id]
+  }
 
-#   identity {
-#     type         = "UserAssigned"
-#     identity_ids = [azurerm_user_assigned_identity.vm.id]
-#   }
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
 
-#   os_disk {
-#     caching              = "ReadWrite"
-#     storage_account_type = "Standard_LRS"
-#   }
+  source_image_reference {
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2022-Datacenter"
+    version   = "latest"
+  }
+}
 
-#   source_image_reference {
-#     publisher = "MicrosoftWindowsServer"
-#     offer     = "WindowsServer"
-#     sku       = "2022-Datacenter"
-#     version   = "latest"
-#   }
-# }
+
+resource "azurerm_windows_virtual_machine" "hubvmB" {
+  count = var.environment_name == "prod" ? 1 : 0
+
+  name                  = "hubvmB${var.application_name}${var.environment_name}"
+  computer_name         = "hubvmB-${substr(var.environment_name, 0, 4)}"
+  resource_group_name   = azurerm_resource_group.this.name
+  location              = azurerm_resource_group.this.location
+  size                  = "Standard_B2ms"
+  admin_username        = "adminuser"
+  admin_password        = random_password.hub_vm_password[0].result
+  network_interface_ids = [for key, value in azurerm_network_interface.hub_nicB : value.id]
+
+  identity {
+    type         = "UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.vm.id]
+  }
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2022-Datacenter"
+    version   = "latest"
+  }
+}
 
 
 # ###############################
