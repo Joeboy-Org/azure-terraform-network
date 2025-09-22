@@ -21,4 +21,15 @@ spoke_vnets = {
       }
     }
   }
+  "SpokeVnetB" = {
+    spoke_base_address_space = "192.169.10.0/22"
+    subnets = {
+      "SubnetA" = {
+        address_prefix = "192.169.10.0/26"
+      }
+      "SubnetB" = {
+        address_prefix = "192.169.10.64/26"
+      }
+    }
+  }
 }
